@@ -3,42 +3,92 @@ package app;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Scanner;
 
 public class main {
-    public static void main(String[] args) {
-        String fileName = "C:\\Users\\austi\\Desktop\\Repositories (GitHub)\\CST-201\\Project Zero\\ProjectZero\\Text"; // Change this to the path of your input file
-        int capacity = 10000; // Capacity for the string array
+	public static void main(String[] args) {
+		  String[] words = new String[10000];
+	        int size = 0;
 
-        try {
-            // Open the file for reading
-            BufferedReader br = new BufferedReader(new FileReader(fileName));
+	        // Read strings from the file and store them in the array
+	        try (BufferedReader br = new BufferedReader(new FileReader("C:\\Users\\austi\\Desktop\\Repositories (GitHub)\\CST-201\\Project Zero\\ProjectZero\\Text"))) {
+	            String line;
+	            while ((line = br.readLine()) != null && size < 10000) {
+	                words[size++] = line;
+	            }
+	        } catch (IOException e) {
+	            System.err.println("Error reading the file: " + e.getMessage());
+	            System.exit(1);
+	        }
 
-            String[] stringArray = new String[capacity];
-            int stringCount = 0;
+	        // Print the unsorted array
+	        System.out.println("Unsorted Array:");
+	        for (int i = 0; i < size; i++) {
+	            System.out.println(words[i]);
+	        }
 
-            // Read the file line by line
-            String line;
-            while ((line = br.readLine()) != null) {
-                // Store each line as a string in the array
-                stringArray[stringCount] = line;
-                stringCount++;
+	        // Sort the array using bubble sort
+	        bubbleSort(words, size);
 
-                // Check if the array is full
-                if (stringCount == capacity) {
-                    System.err.println("Maximum capacity reached. Exiting.");
-                    break;
-                }
-            }
+	        // Print the sorted array
+	        System.out.println("\nSorted Array:");
+	        for (int i = 0; i < size; i++) {
+	            System.out.println(words[i]);
+	        }
 
-            // Close the file
-            br.close();
+	        // Search for words using binary search
+	        Scanner scanner = new Scanner(System.in);
+	        while (true) {
+	            System.out.print("\nEnter a word to search for (or type 'exit' to quit): ");
+	            String target = scanner.nextLine();
 
-            // Print the stored strings
-            for (int i = 0; i < stringCount; i++) {
-                System.out.println(stringArray[i]);
-            }
-        } catch (IOException e) {
-            System.err.println("An error occurred: " + e.getMessage());
-        }
-    }
-}
+	            if (target.equals("exit")) {
+	                break;
+	            }
+
+	            int index = binarySearch(words, size, target);
+
+	            if (index != -1) {
+	                System.out.println("Word found at index: " + index);
+	            } else {
+	                System.out.println("Word not in the list.");
+	            }
+	        }
+	    }
+
+	    // Bubble sort to sort the array
+	    private static void bubbleSort(String[] arr, int size) {
+	        for (int i = 0; i < size - 1; i++) {
+	            for (int j = 0; j < size - i - 1; j++) {
+	                if (arr[j].compareTo(arr[j + 1]) > 0) {
+	                    String temp = arr[j];
+	                    arr[j] = arr[j + 1];
+	                    arr[j + 1] = temp;
+	                }
+	            }
+	        }
+	    }
+
+	    // Binary search to search for a word in the sorted array
+	    private static int binarySearch(String[] arr, int size, String target) {
+	        int left = 0;
+	        int right = size - 1;
+
+	        while (left <= right) {
+	            int mid = left + (right - left) / 2;
+
+	            int cmp = target.compareTo(arr[mid]);
+
+	            if (cmp == 0) {
+	                return mid; // Found
+	            } else if (cmp < 0) {
+	                right = mid - 1;
+	            } else {
+	                left = mid + 1;
+	            }
+	        }
+
+	        return -1; // Not found
+	    }
+	}
