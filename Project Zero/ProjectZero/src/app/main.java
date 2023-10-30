@@ -10,7 +10,7 @@ public class main {
         String[] wordArray = new String[10000];
         int wordCount = 0;
 
-        // Step 1: Read from a text file and store words in the array
+        // Read from a text file and store words in the array
         try {
             BufferedReader reader = new BufferedReader(new FileReader("C:\\Users\\austi\\Desktop\\Repositories (GitHub)\\CST-201\\Project Zero\\ProjectZero\\Text"));
             String line;
@@ -30,16 +30,16 @@ public class main {
         System.out.println("Unsorted Array: ");
         printArray(wordArray);
 
-        // Step 2: Check if the array is full and print it
+        // Check if the array is full and print it
         if (wordCount >= 10000) {
             System.out.println("Unsorted Array:");
             printArray(wordArray);
         }
 
-        // Step 3: Implement a selective sort method to sort the array
+        // Implement a selective sort method to sort the array
         selectiveSort(wordArray, wordCount);
 
-        // Step 4: Implement a binary search method to search for words
+        // Implement a binary search method to search for words
         binarySearch(wordArray, wordCount);
     }
 
