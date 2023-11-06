@@ -12,8 +12,7 @@ import java.util.Scanner;
 public class DLinkedList<T extends Comparable<T>> {
 
     public static void main(String[] args) throws FileNotFoundException {
-
-        DLinkedList<String> lst1 = new DLinkedList<>();
+    	DLinkedList<String> lst1 = new DLinkedList<>();
         DLinkedList<String> lst2 = new DLinkedList<>();        
 
         Scanner fin = new Scanner(new File("C:\\Users\\austi\\Desktop\\Repositories (GitHub)\\CST-201\\Project 3\\Project3\\Text1.txt"));
@@ -52,6 +51,7 @@ public class DLinkedList<T extends Comparable<T>> {
      * chars removed
      */
     public static String cleanUp(String str) {
+        str = str.toLowerCase().replaceAll("^[^a-z]+|[^a-z]+$", "");
         return str;
     }
 
@@ -112,17 +112,18 @@ public class DLinkedList<T extends Comparable<T>> {
      * @return true if successful, false otherwise
      */
     public boolean remove(T val) {
-    	  DNode curr = header.next;
-    	    while (curr != header) {
-    	        if (curr.data.equals(val)) {
-    	            curr.prev.next = curr.next;
-    	            curr.next.prev = curr.prev;
-    	            return true;
-    	        }
-    	        curr = curr.next;
-    	    }
-    	    return false;
-    }
+    	DNode curr = header.next;
+        while (curr != header) {
+            if (curr.data.equals(val)) {
+                curr.prev.next = curr.next;
+                curr.next.prev = curr.prev;
+                return true;
+            }
+            curr = curr.next;
+        }
+        return false;
+    }    
+            
 
     /**
      * ASSIGNED
@@ -139,7 +140,8 @@ public class DLinkedList<T extends Comparable<T>> {
     	    newNode.next = curr;
     	    curr.prev.next = newNode;
     	    curr.prev = newNode;
-    }
+    	}       
+ 
 
     /**
      * ASSIGNED
@@ -147,12 +149,12 @@ public class DLinkedList<T extends Comparable<T>> {
      * @param item
      */
     public boolean insertOrderUnique(T item) {
-    	 DNode curr = header.next;
+    	  DNode curr = header.next;
     	    while (curr != header) {
-    	        int cmp = item.compareTo(curr.data);
-    	        if (cmp == 0) {
-    	            return false; // Item is already in the list
-    	        } else if (cmp < 0) {
+    	        int comparison = item.compareTo(curr.data);
+    	        if (comparison == 0) {
+    	            return false; // Item is not unique
+    	        } else if (comparison < 0) {
     	            break;
     	        }
     	        curr = curr.next;
@@ -163,7 +165,7 @@ public class DLinkedList<T extends Comparable<T>> {
     	    curr.prev.next = newNode;
     	    curr.prev = newNode;
     	    return true;
-    }
+    	}
 
     /**
      * ASSIGNED
@@ -173,31 +175,42 @@ public class DLinkedList<T extends Comparable<T>> {
      * POST:  returned list will not contain duplicates
      */
     public DLinkedList merge(DLinkedList rhs) {
-    	 DLinkedList result = new DLinkedList();
-    	    DNode curr1 = this.header.next;
-    	    DNode curr2 = rhs.header.next;
-    	    
-    	    while (curr1 != this.header && curr2 != rhs.header) {
-    	        if (curr1.data.compareTo(curr2.data) <= 0) {
-    	            result.insertOrderUnique(curr1.data);
-    	            curr1 = curr1.next;
-    	        } else {
-    	            result.insertOrderUnique(curr2.data);
-    	            curr2 = curr2.next;
-    	        }
-    	    }
-    	    
-    	    while (curr1 != this.header) {
-    	        result.insertOrderUnique(curr1.data);
-    	        curr1 = curr1.next;
-    	    }
-    	    
-    	    while (curr2 != rhs.header) {
-    	        result.insertOrderUnique(curr2.data);
-    	        curr2 = curr2.next;
-    	    }
-    	    
-    	    return result;
-    	}
+        DLinkedList result = new DLinkedList();
+        DNode left = this.header.next;
+        DNode right = rhs.header.next;
+
+        while (left != this.header && right != rhs.header) {
+            if (left.data.compareTo(right.data) < 0) {
+                result.add(left.data);
+                left = left.next;
+            } else if (left.data.compareTo(right.data) > 0) {
+                result.add(right.data);
+                right = right.next;
+            } else {
+                // Skip duplicates
+                left = left.next;
+                right = right.next;
+            }
+        }
+
+        while (left != this.header) {
+            result.add(left.data);
+            left = left.next;
+        }
+
+        while (right != rhs.header) {
+            result.add(right.data);
+            right = right.next;
+        }
+
+        // Empty the original lists
+        this.header.next = this.header.prev = this.header;
+        rhs.header.next = rhs.header.prev = rhs.header;
+
+        return result;
+    }
 
 }
+        
+
+
